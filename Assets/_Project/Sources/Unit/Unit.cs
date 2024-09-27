@@ -29,10 +29,10 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     public void Init(IStorage storage, Vector3 basePosition)
     {
         _storage = storage;
-        _basePosition = _basePosition;
+        _basePosition = basePosition;
     }
     
-    public void GetResource(Resource resource)
+    public void OrderResource(Resource resource)
     {
         _resource = resource;
         _resourceTransform = resource.GetComponent<Transform>();
@@ -43,7 +43,7 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
 
     private IEnumerator CollectingResource()
     {
-        yield return MovingTo(_resourceTransform.position); // refactor
+        yield return MovingTo(_resourceTransform.position);
         
         Grab(_resource);
         LaunchCoroutine(GoingBase());

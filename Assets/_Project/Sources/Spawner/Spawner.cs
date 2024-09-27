@@ -40,6 +40,26 @@ public class Spawner<T> : MonoBehaviour where T: MonoBehaviour, ISpawnable<T>
 		Gizmos.DrawWireCube(transform.position, new Vector3(_randomSpreadX, 2, _randomSpreadZ));
 	}
 
+	public bool TrySpawn(out T spawnedObject)
+	{
+		if (_maxAmount != _activeCount)
+		{
+			spawnedObject = _pool.Get();
+
+			spawnedObject.Destroying += OnSpawnedDestroy;
+			spawnedObject.gameObject.SetActive(true);
+			
+			_activeCount++;
+			_spawnsCount++;
+			CounterChanged?.Invoke(_pool.EntitiesCount, _activeCount, _spawnsCount);
+			
+			return true;
+		}
+		
+		spawnedObject = null;
+		return false;
+	}
+	
 	protected virtual void SpawnAtRandom()
 	{
 		if (TrySpawn(out T spawnedObject))
@@ -68,26 +88,6 @@ public class Spawner<T> : MonoBehaviour where T: MonoBehaviour, ISpawnable<T>
 		} while (IsSameObjectAround(overlapRaius, spawnPosition));
 
 		return spawnPosition;
-	}
-
-	protected bool TrySpawn(out T spawnedObject)
-	{
-		if (_maxAmount != _activeCount)
-		{
-			spawnedObject = _pool.Get();
-
-			spawnedObject.Destroying += OnSpawnedDestroy;
-			spawnedObject.gameObject.SetActive(true);
-			
-			_activeCount++;
-			_spawnsCount++;
-			CounterChanged?.Invoke(_pool.EntitiesCount, _activeCount, _spawnsCount);
-			
-			return true;
-		}
-		
-		spawnedObject = null;
-		return false;
 	}
 
 	protected virtual void OnSpawnedDestroy(T spawnableObject)
