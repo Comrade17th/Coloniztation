@@ -93,7 +93,7 @@ public class Base : MonoBehaviour, IStorage
 
     private void InitUnit(Unit unit)
     {
-        unit.Init(this, transform.position);
+        unit.Init(this, transform);
     }
 
     private void OrderResource()

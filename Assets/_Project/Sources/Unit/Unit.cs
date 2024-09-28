@@ -1,75 +1,75 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using _Project.Sources;
 using UnityEngine;
-using UnityEngine.UIElements;
+
+[RequireComponent(typeof(UnitMover))]
 
 public class Unit : MonoBehaviour, ISpawnable<Unit>
 {
-    public event Action<Unit> Destroying;
-
-    [SerializeField] private float _speed;
     [SerializeField] private Transform _holdPoint;
     
     private IStorage _storage;
-    private Vector3 _basePosition;
-    
+    private Transform _base;
+
+    private UnitMover _mover;
     private Resource _resource;
-    private Transform _resourceTransform;
     private Coroutine _coroutine;
+    
+    public event Action<Unit> Destroying = delegate{};
     
     public WorkStatuses WorkStatus { get; private set; }
 
     private void Awake()
     {
+        _mover = GetComponent<UnitMover>();
         WorkStatus = WorkStatuses.Rest;
     }
     
-    public void Init(IStorage storage, Vector3 basePosition)
+    public void Init(IStorage storage, Transform baseTransform)
     {
         _storage = storage;
-        _basePosition = basePosition;
+        _base = baseTransform;
     }
     
     public void OrderResource(Resource resource)
     {
         _resource = resource;
-        _resourceTransform = resource.GetComponent<Transform>();
+        _mover.GoTo(resource.transform);
         WorkStatus = WorkStatuses.GoResource;
-        
-        LaunchCoroutine(CollectingResource());
+        _mover.TargetReached += GoBase;
+        // LaunchCoroutine(CollectingResource());
     }
 
-    private IEnumerator CollectingResource()
+    private void GoBase()
     {
-        yield return MovingTo(_resourceTransform.position);
-        
-        Grab(_resource);
-        LaunchCoroutine(GoingBase());
-    }
-    
-    private IEnumerator GoingBase()
-    {
-        yield return MovingTo(_basePosition);
-        PutToStorage();
+        _mover.TargetReached -= GoBase;
+        Grab();
+        _mover.GoTo(_base);
     }
 
-    private IEnumerator MovingTo(Vector3 position)
+    // private IEnumerator CollectingResource()
+    // {
+    //     yield return MovingTo(_resourceTransform.position);
+    //     
+    //     Grab(_resource);
+    //     LaunchCoroutine(GoingBase());
+    // }
+    //
+    // private IEnumerator GoingBase()
+    // {
+    //     yield return MovingTo(_basePosition);
+    //     PutToStorage();
+    // }
+
+    private void OnPointReached()
     {
-        while (transform.position != position)
-        {
-            FollowTarget(position);
-            yield return Time.deltaTime;
-        }
+        
     }
 
     private void LaunchCoroutine(IEnumerator routine)
     {
-        if (_coroutine != null)
-            StopCoroutine(_coroutine);
         
-        _coroutine = StartCoroutine(routine);
     }
 
     private void PutToStorage()
@@ -78,18 +78,10 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
         WorkStatus = WorkStatuses.Rest;
     }
     
-    private void Grab(Resource resource)
+    private void Grab()
     {
-        resource.transform.parent = transform;
-        resource.transform.position = _holdPoint.position;
+        _resource.transform.parent = transform;
+        _resource.transform.position = _holdPoint.position;
         WorkStatus = WorkStatuses.GoBase;
-    }
-
-    private void FollowTarget(Vector3 position)
-    {
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            position, 
-            _speed * Time.deltaTime);
     }
 }
