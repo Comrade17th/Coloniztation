@@ -43,6 +43,7 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     private void GoBase()
     {
         _mover.TargetReached -= GoBase;
+        _mover.TargetReached += PutToStorage;
         Grab();
         _mover.GoTo(_base);
     }
@@ -63,6 +64,8 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
 
     private void PutToStorage()
     {
+        _mover.TargetReached -= PutToStorage;
+        _resource.transform.parent = null;
         _storage.Keep(_resource);
         WorkStatus = WorkStatuses.Rest;
     }

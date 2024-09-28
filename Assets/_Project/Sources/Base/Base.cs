@@ -52,7 +52,6 @@ public class Base : MonoBehaviour, IStorage
     public void Keep(Resource resource)
     {
         Add(resource.Value);
-        resource.transform.parent = transform;
         resource.Destroy();
     }
 
