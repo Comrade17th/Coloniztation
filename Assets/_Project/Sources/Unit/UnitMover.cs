@@ -37,8 +37,6 @@ public class UnitMover : MonoBehaviour
 
     private IEnumerator MovingTo(Vector3 position)
     {
-        //transform.LookAt(position);
-        
         while (transform.position != position)
         {
             FollowTarget(position);

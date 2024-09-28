@@ -36,9 +36,8 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     {
         _resource = resource;
         _mover.GoTo(resource.transform);
-        WorkStatus = WorkStatuses.GoResource;
         _mover.TargetReached += GoBase;
-        // LaunchCoroutine(CollectingResource());
+        WorkStatus = WorkStatuses.GoResource;
     }
 
     private void GoBase()
@@ -61,16 +60,6 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     //     yield return MovingTo(_basePosition);
     //     PutToStorage();
     // }
-
-    private void OnPointReached()
-    {
-        
-    }
-
-    private void LaunchCoroutine(IEnumerator routine)
-    {
-        
-    }
 
     private void PutToStorage()
     {

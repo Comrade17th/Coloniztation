@@ -8,7 +8,7 @@ public class Pool<T> where T : MonoBehaviour
 	private readonly Transform _container;
 	private readonly Transform _spawnPoint;
 	private readonly int _startAmount;
-	private Queue<T> _queue = new();
+	private Stack<T> _stack = new();
 	
 	private int _entitiesCount = 0;
 
@@ -30,15 +30,15 @@ public class Pool<T> where T : MonoBehaviour
 	
 	public void Release(T template)
 	{
-		_queue.Enqueue(template);
+		_stack.Push(template);
 	}
 	
 	public T Get()
 	{
-		if (_queue.TryDequeue(out T template) == false)
+		if (_stack.TryPop(out T template) == false)
 		{
 			Create();
-			template = _queue.Dequeue();
+			template = _stack.Pop();
 		}
 		
 		return template;
@@ -50,7 +50,7 @@ public class Pool<T> where T : MonoBehaviour
 		_entitiesCount++;
 		template.gameObject.SetActive(false);
 		_templates.Add(template);
-		_queue.Enqueue(template);
+		_stack.Push(template);
 
 		return template;
 	}
