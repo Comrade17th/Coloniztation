@@ -9,20 +9,13 @@ public class UnitMover : MonoBehaviour
 
     private Transform _target;
     private Coroutine _coroutine;
+    private float _epsilent = 0.1f;
 
     public event Action TargetReached = delegate { };
 
     private void OnDisable()
     {
         TargetReached = delegate { };
-    }
-    
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.transform == _target)
-        {
-            TargetReached.Invoke();
-        }
     }
 
     public void GoTo(Transform target)
@@ -37,11 +30,13 @@ public class UnitMover : MonoBehaviour
 
     private IEnumerator MovingTo(Vector3 position)
     {
-        while (transform.position != position)
+        while ((transform.position - position).magnitude >= _epsilent)
         {
             FollowTarget(position);
             yield return Time.deltaTime;
         }
+        
+        TargetReached.Invoke();
     }
     
     private void FollowTarget(Vector3 position)

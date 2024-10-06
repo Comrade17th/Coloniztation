@@ -36,30 +36,28 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     {
         _resource = resource;
         Debug.Log($"Resource ordered, i go resource");
+        _mover.enabled = true;
         _mover.GoTo(resource.transform); // some where here something goes wrond
+        Debug.Log($"GoTo отработал");
         _mover.TargetReached += GoBase;
+        Debug.Log($"Новый метод подписался");
         WorkStatus = WorkStatuses.GoResource;
     }
 
     private void GoBase()
     {
-        Debug.Log($"Resource reached");
         _mover.TargetReached -= GoBase;
         _mover.TargetReached += PutToStorage;
         Grab();
-        Debug.Log($"i grabbed resource");
         _mover.GoTo(_base);
-        Debug.Log($"I go base");
     }
 
     private void PutToStorage()
     {
-        Debug.Log($"Base reached");
         _mover.TargetReached -= PutToStorage;
         _resource.transform.parent = null;
         _storage.Keep(_resource);
         WorkStatus = WorkStatuses.Rest;
-        Debug.Log($"I rest");
     }
     
     private void Grab()
