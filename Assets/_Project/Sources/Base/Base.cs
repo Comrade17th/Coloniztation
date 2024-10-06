@@ -21,6 +21,8 @@ public class Base : MonoBehaviour, IStorage
     private Coroutine _coroutine;
     private WaitForSeconds _waitOrder;
 
+    [field: SerializeField] public Flag Flag; 
+
     public event Action<int> StoredResourcesChanged;
 
     private void Awake()
@@ -121,5 +123,4 @@ public class Base : MonoBehaviour, IStorage
             yield return _waitOrder;
         }
     }
-    
 }

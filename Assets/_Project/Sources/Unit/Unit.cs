@@ -17,6 +17,7 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     private Coroutine _coroutine;
     
     public event Action<Unit> Destroying = delegate{};
+    public event Action<Unit> BaseBuilded = delegate { };
     
     public WorkStatuses WorkStatus { get; private set; }
 
@@ -31,16 +32,18 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
         _storage = storage;
         _base = baseTransform;
     }
+
+    public void BuildBase(Flag flag)
+    {
+        _mover.GoTo(flag.transform);
+    }
     
     public void OrderResource(Resource resource)
     {
         _resource = resource;
-        Debug.Log($"Resource ordered, i go resource");
         _mover.enabled = true;
-        _mover.GoTo(resource.transform); // some where here something goes wrond
-        Debug.Log($"GoTo отработал");
+        _mover.GoTo(resource.transform);
         _mover.TargetReached += GoBase;
-        Debug.Log($"Новый метод подписался");
         WorkStatus = WorkStatuses.GoResource;
     }
 
