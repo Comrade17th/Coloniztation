@@ -35,39 +35,31 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     public void OrderResource(Resource resource)
     {
         _resource = resource;
-        _mover.GoTo(resource.transform);
+        Debug.Log($"Resource ordered, i go resource");
+        _mover.GoTo(resource.transform); // some where here something goes wrond
         _mover.TargetReached += GoBase;
         WorkStatus = WorkStatuses.GoResource;
     }
 
     private void GoBase()
     {
+        Debug.Log($"Resource reached");
         _mover.TargetReached -= GoBase;
         _mover.TargetReached += PutToStorage;
         Grab();
+        Debug.Log($"i grabbed resource");
         _mover.GoTo(_base);
+        Debug.Log($"I go base");
     }
-
-    // private IEnumerator CollectingResource()
-    // {
-    //     yield return MovingTo(_resourceTransform.position);
-    //     
-    //     Grab(_resource);
-    //     LaunchCoroutine(GoingBase());
-    // }
-    //
-    // private IEnumerator GoingBase()
-    // {
-    //     yield return MovingTo(_basePosition);
-    //     PutToStorage();
-    // }
 
     private void PutToStorage()
     {
+        Debug.Log($"Base reached");
         _mover.TargetReached -= PutToStorage;
         _resource.transform.parent = null;
         _storage.Keep(_resource);
         WorkStatus = WorkStatuses.Rest;
+        Debug.Log($"I rest");
     }
     
     private void Grab()

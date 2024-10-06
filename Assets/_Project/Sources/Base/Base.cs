@@ -110,7 +110,6 @@ public class Base : MonoBehaviour, IStorage
 
     private void WriteResource(Resource resource)
     {
-        Debug.Log($"Base added resource");
         _resources.Add(resource);
     }
 
