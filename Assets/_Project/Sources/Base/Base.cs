@@ -10,13 +10,14 @@ public class Base : MonoBehaviour, IStorage
 {
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private Radar _sonar;
-    [SerializeField] private List<Unit> _units = new();
+    [SerializeField] private List<Unit> _units = new(); // unit garage
 
     [SerializeField] private int _startUnitsCount = 3;
     [SerializeField] private float _orderDelay = 0.5f;
     
-    private HashSet<Resource> _resources = new();
+    private HashSet<Resource> _resources = new(); // => database res
     private int _storedResources = 0;
+    private int _unitCreatePrice = 3;
 
     private Coroutine _coroutine;
     private WaitForSeconds _waitOrder;
@@ -53,19 +54,33 @@ public class Base : MonoBehaviour, IStorage
     
     public void Keep(Resource resource)
     {
-        Add(resource.Value);
+        if(resource.Value <= 0)
+            return;
+
+        _storedResources += (resource.Value);
+        StoredResourcesChanged?.Invoke(_storedResources);
         resource.Destroy();
+    }
+
+    private void TryCreateUnit()
+    {
+        if (_storedResources >= _unitCreatePrice)
+        {
+            CreateUnits(1);
+        }
     }
 
     private void CreateUnits(int count)
     {
         for (int i = 0; i < count; i++)
         {
-            if (_unitSpawner.TrySpawn(out Unit unit))
-            {
-                _units.Add(unit);
-            }
+            _units.Add(_unitSpawner.Spawn());
         }
+    }
+
+    private void CreateUnit()
+    {
+        
     }
     
     private bool TryGetRestUnit(out Unit result)
@@ -81,15 +96,6 @@ public class Base : MonoBehaviour, IStorage
 
         result = null;
         return false;
-    }
-    
-    private void Add(int value)
-    {
-        if(value <= 0)
-            return;
-
-        _storedResources += value;
-        StoredResourcesChanged?.Invoke(_storedResources);
     }
 
     private void InitUnit(Unit unit)

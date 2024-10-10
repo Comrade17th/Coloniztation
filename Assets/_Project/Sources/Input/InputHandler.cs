@@ -56,16 +56,12 @@ public class InputHandler : MonoBehaviour
 
     private void OnLMBClicked()
     {
-        Debug.Log($"LMB");
-        
         if(Physics.Raycast(_camera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
         {
             if (_selectedBase == null)
             {
-                Debug.Log($"*");
                 if (hit.collider.TryGetComponent(out Base hitBase))
                 {
-                    Debug.Log($"Base got");
                     _selectedBase = hitBase;
                     _flag = _selectedBase.Flag;
                     _flag.StartPlacing();

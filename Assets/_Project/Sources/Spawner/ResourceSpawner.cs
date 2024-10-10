@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using _Project.Sources.Spawner;
 
-public class ResourceSpawner : Spawner<Resource>
+public class ResourceSpawner : SpawnerRandom<Resource>
 {
     
 }
