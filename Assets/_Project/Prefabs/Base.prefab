@@ -271,7 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _database: {fileID: 0}
   _unitGarage: {fileID: 7698192240838781983}
-  _radar: {fileID: 0}
+  _radar: {fileID: 4177821445123991342}
   _orderDelay: 0.5
   Flag: {fileID: 1610523085164186262}
 --- !u!114 &7698192240838781983
@@ -544,7 +544,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8966953333117804864
 Transform:
   m_ObjectHideFlags: 0
@@ -820,7 +820,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4889564406777388857
 Transform:
   m_ObjectHideFlags: 0
@@ -1313,7 +1313,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9147456377544686130}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b2bd1fe791fc32c4a860803686fd10e5, type: 3}
   m_Name: 

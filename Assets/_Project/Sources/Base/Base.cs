@@ -37,18 +37,15 @@ public class Base : MonoBehaviour
 
     private void OrderResource()
     {
-        Debug.Log($"Order res");
-        
+       
         if (_unitGarage.TryGetRestUnit(out Unit unit))
         {
-            Debug.Log($"Free units");
-            IEnumerable<Resource> scannedResources = _radar.Scan();
-            IEnumerable<Resource> filteredResources = _database.GetFreeResources(scannedResources);
+            IEnumerable<Resource> scannedResources = _database.GetFreeResources(_radar.Scan());
             
-            if(filteredResources.Any() == false)
+            if(scannedResources.Any() == false)
                 return;
 
-            IEnumerable<Resource> sortedResources = filteredResources.OrderBy(resource =>
+            IEnumerable<Resource> sortedResources = scannedResources.OrderBy(resource =>
                 (resource.transform.position - transform.position).sqrMagnitude);
 
             Resource resource = sortedResources.First();
@@ -66,6 +63,21 @@ public class Base : MonoBehaviour
         _storedResources += (resource.Value);
         StoredResourcesChanged?.Invoke(_storedResources);
         resource.Destroy();
+
+        TryCreateNewUnit();
+    }
+
+    private bool TryCreateNewUnit()
+    {
+        if (_storedResources >= _unitCreatePrice)
+        {
+            _storedResources -= _unitCreatePrice;
+            StoredResourcesChanged.Invoke(_storedResources);
+            _unitGarage.CreateUnit();
+            return true;
+        }
+
+        return false;
     }
 
     private IEnumerator OrderingResources()
