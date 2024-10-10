@@ -200,6 +200,7 @@ GameObject:
   - component: {fileID: 2876925914891625024}
   - component: {fileID: 8075503473892343529}
   - component: {fileID: 7440515120984232606}
+  - component: {fileID: 7698192240838781983}
   m_Layer: 6
   m_Name: Base
   m_TagString: Untagged
@@ -268,12 +269,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57e4f140e67921e4dac3ec53bbbd0a6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _unitSpawner: {fileID: 0}
-  _sonar: {fileID: 2013476964422499423}
-  _units: []
-  _startUnitsCount: 3
+  _database: {fileID: 0}
+  _unitGarage: {fileID: 7698192240838781983}
+  _radar: {fileID: 0}
   _orderDelay: 0.5
   Flag: {fileID: 1610523085164186262}
+--- !u!114 &7698192240838781983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410010476059416813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13cb162ee7e409a41b3f2e5fd53a0602, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitSpawner: {fileID: 0}
+  _startUnitsCount: 3
 --- !u!1 &1890396506716880817
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,6 +946,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8807b88ce262f034490a8fb7b9fd1b24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _radius: 10
+  _resourceMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &3913816875961426430
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,6 +1281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5350635557588808406}
   - component: {fileID: 4062715212355513313}
+  - component: {fileID: 4177821445123991342}
   m_Layer: 0
   m_Name: Radar
   m_TagString: Untagged
@@ -1304,6 +1323,22 @@ MonoBehaviour:
   _repeats: -1
   _loopType: 0
   _rotateMode: 1
+--- !u!114 &4177821445123991342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9147456377544686130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8807b88ce262f034490a8fb7b9fd1b24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radius: 10
+  _resourceMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1001 &5972542107005027362
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1374,7 +1409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8524652821222690642, guid: 4e2105c99c34c4e5c80a64801b648146, type: 3}
       propertyPath: m_Layer
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8537267202140013819, guid: 4e2105c99c34c4e5c80a64801b648146, type: 3}

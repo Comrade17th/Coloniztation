@@ -9,15 +9,15 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
 {
     [SerializeField] private Transform _holdPoint;
     
-    private IStorage _storage;
     private Transform _base;
-
     private UnitMover _mover;
     private Resource _resource;
     private Coroutine _coroutine;
     
     public event Action<Unit> Destroying = delegate{};
-    public event Action<Unit> BaseBuilded = delegate { };
+    public event Action<Unit> BaseBuilded = delegate {};
+
+    public event Action<Resource, Unit> ResourceDelivered = delegate { }; 
     
     public WorkStatuses WorkStatus { get; private set; }
 
@@ -27,9 +27,8 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
         WorkStatus = WorkStatuses.Rest;
     }
     
-    public void Init(IStorage storage, Transform baseTransform)
+    public void Init(Transform baseTransform)
     {
-        _storage = storage;
         _base = baseTransform;
     }
 
@@ -50,16 +49,16 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     private void GoBase()
     {
         _mover.TargetReached -= GoBase;
-        _mover.TargetReached += PutToStorage;
+        _mover.TargetReached += DeliverResource;
         Grab();
         _mover.GoTo(_base);
     }
 
-    private void PutToStorage()
+    private void DeliverResource()
     {
-        _mover.TargetReached -= PutToStorage;
+        _mover.TargetReached -= DeliverResource;
         _resource.transform.parent = null;
-        _storage.Keep(_resource);
+        ResourceDelivered.Invoke(_resource, this);
         WorkStatus = WorkStatuses.Rest;
     }
     

@@ -1,15 +1,21 @@
 using UnityEngine;
-using System;
+using System.Collections.Generic;
 
 public class Radar : MonoBehaviour
 {
-    public event Action<Resource> ResourceFinded;
-
-    private void OnTriggerEnter(Collider other)
+    [SerializeField] private float _radius = 10f;
+    [SerializeField] private LayerMask _resourceMask;
+    
+    public IEnumerable<Resource> Scan()
     {
-        if (other.TryGetComponent(out Resource resource))
+        List<Resource> resources = new List<Resource>();
+
+        foreach (var collider in Physics.OverlapSphere(transform.position, _radius, _resourceMask))
         {
-            ResourceFinded?.Invoke(resource);
+            if (collider.TryGetComponent(out Resource cristal))
+                resources.Add(cristal);
         }
+
+        return resources;
     }
 }
