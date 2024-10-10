@@ -5,14 +5,22 @@ public class UnitGarage : MonoBehaviour
 {
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private int _startUnitsCount = 3;
+    [SerializeField] private bool _isInitialBase;
     
     private List<Unit> _units = new();
 
     private void Start()
     {
-        CreateUnits(_startUnitsCount);
+        if(_isInitialBase)
+            CreateUnits(_startUnitsCount);
     }
 
+    public void AcceptUnit(Unit unit)
+    {
+        unit.Init(transform);
+        _units.Add(unit);
+    }
+    
     public void CreateUnit()
     {
         Unit unit = _unitSpawner.Spawn();

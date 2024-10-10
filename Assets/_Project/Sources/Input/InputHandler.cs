@@ -65,7 +65,7 @@ public class InputHandler : MonoBehaviour
                     _selectedBase = hitBase;
                     _flag = _selectedBase.Flag;
                     _flag.StartPlacing();
-                    // say to base stop getting ready units
+                    _selectedBase.StopUnitsGettingReady();
                 }
             }
             else
@@ -74,7 +74,7 @@ public class InputHandler : MonoBehaviour
                 {
                     _flag.Plant();
                     OnUnchooseBase();
-                    // say to base, to get ready units for new base building
+                    _selectedBase.StartUnitsGettingReady();
                 }
                     
             }

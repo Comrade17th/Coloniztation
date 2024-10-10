@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using UnityEngine.Serialization;
 
-public class Base : MonoBehaviour
+public class Base : MonoBehaviour, ISpawnable<Base>
 {
     [SerializeField] private ResourcesDataBase _database;
     [SerializeField] private UnitGarage _unitGarage; 
@@ -16,6 +16,8 @@ public class Base : MonoBehaviour
     
     private int _storedResources = 0;
     private int _unitCreatePrice = 3;
+    private int _baseCreatePrice = 5;
+    private bool _isBaseBuilding = false;
 
     private Coroutine _coroutine;
     private WaitForSeconds _waitOrder;
@@ -23,6 +25,7 @@ public class Base : MonoBehaviour
     [field: SerializeField] public Flag Flag; 
 
     public event Action<int> StoredResourcesChanged;
+    public event Action<Base> Destroying;
 
     private void Awake()
     {
@@ -32,12 +35,23 @@ public class Base : MonoBehaviour
 
     private void Start()
     {
-        _coroutine = StartCoroutine(OrderingResources());
+        _coroutine = StartCoroutine(Working());
     }
 
+    public void StartUnitsGettingReady()
+    {
+        _isBaseBuilding = true;
+    }
+    
+    public void StopUnitsGettingReady()
+    {
+        _isBaseBuilding = false;
+    }
+
+    public void AcceptUnit(Unit unit) => _unitGarage.AcceptUnit(unit);
+    
     private void OrderResource()
     {
-       
         if (_unitGarage.TryGetRestUnit(out Unit unit))
         {
             IEnumerable<Resource> scannedResources = _database.GetFreeResources(_radar.Scan());
@@ -69,7 +83,7 @@ public class Base : MonoBehaviour
 
     private bool TryCreateNewUnit()
     {
-        if (_storedResources >= _unitCreatePrice)
+        if (_isBaseBuilding == false && _storedResources >= _unitCreatePrice)
         {
             _storedResources -= _unitCreatePrice;
             StoredResourcesChanged.Invoke(_storedResources);
@@ -80,10 +94,23 @@ public class Base : MonoBehaviour
         return false;
     }
 
-    private IEnumerator OrderingResources()
+    private void CreateBase()
+    {
+        if (_isBaseBuilding && _storedResources >= _baseCreatePrice)
+        {
+            if (_unitGarage.TryGetRestUnit(out Unit unit))
+            {
+                _storedResources -= _baseCreatePrice;
+                unit.BuildBase(Flag);
+            }
+        }
+    }
+
+    private IEnumerator Working()
     {
         while (true)
         {
+            CreateBase();
             OrderResource();
             yield return _waitOrder;
         }
