@@ -1,11 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using _Project.Sources;
 using UnityEngine;
 using UnityEngine.Assertions;
 using System;
 using System.Linq;
-using UnityEngine.Serialization;
 
 public class Base : MonoBehaviour, ISpawnable<Base>
 {
@@ -14,22 +12,22 @@ public class Base : MonoBehaviour, ISpawnable<Base>
     [SerializeField] private Radar _radar;
     [SerializeField] private float _orderDelay = 0.5f;
     
-    private int _storedResources = 0;
+    private int _storedResources;
     private int _unitCreatePrice = 3;
     private int _baseCreatePrice = 5;
     private int _unitsNeedToNewBase = 1;
-    private bool _isBaseBuilding = false;
+    private bool _isPreparingToBuild;
 
     private Coroutine _coroutine;
     private WaitForSeconds _waitOrder;
-
-    [field: SerializeField] public Flag Flag;
-
-    private bool IsEnoughUnits => _unitGarage.Count > _unitsNeedToNewBase;
-
+    
     public event Action<int> StoredResourcesChanged;
     public event Action<Base> Destroying;
 
+    [field: SerializeField] public Flag Flag { get; private set; }
+
+    private bool IsEnoughUnits => _unitGarage.Count > _unitsNeedToNewBase;
+    
     private void Awake()
     {
         _waitOrder = new WaitForSeconds(_orderDelay);
@@ -41,16 +39,6 @@ public class Base : MonoBehaviour, ISpawnable<Base>
         _coroutine = StartCoroutine(Working());
     }
 
-    private void OnEnable()
-    {
-        Flag.BaseBuilded += OnFlagBaseBuilded;
-    }
-
-    private void OnDisable()
-    {
-        Flag.BaseBuilded -= OnFlagBaseBuilded;
-    }
-
     public void Init(ResourcesDataBase database, UnitSpawner unitSpawner)
     {
         _unitGarage.Init(unitSpawner);
@@ -59,20 +47,23 @@ public class Base : MonoBehaviour, ISpawnable<Base>
 
     public void StartUnitsGettingReady()
     {
-        _isBaseBuilding = true;
+        _isPreparingToBuild = true;
     }
     
     public void StopUnitsGettingReady()
     {
-        _isBaseBuilding = false;
+        _isPreparingToBuild = false;
     }
-
-    private void OnFlagBaseBuilded(Flag flag)
+    
+    private IEnumerator Working()
     {
-         // add thing that we cant reuse flag
+        while (true)
+        {
+            CreateBase();
+            OrderResource();
+            yield return _waitOrder;
+        }
     }
-
-    // public void AcceptUnit(Unit unit) => _unitGarage.AcceptUnit(unit); 
     
     private void OrderResource()
     {
@@ -102,7 +93,7 @@ public class Base : MonoBehaviour, ISpawnable<Base>
         StoredResourcesChanged?.Invoke(_storedResources);
         resource.Destroy();
 
-        if(_isBaseBuilding == false || IsEnoughUnits == false)
+        if(_isPreparingToBuild == false || IsEnoughUnits == false)
             TryCreateNewUnit();
     }
 
@@ -122,7 +113,7 @@ public class Base : MonoBehaviour, ISpawnable<Base>
     private void CreateBase()
     {
         if ( _unitGarage.Count > _unitsNeedToNewBase && 
-            _isBaseBuilding && 
+            _isPreparingToBuild && 
              _storedResources >= _baseCreatePrice)
         {
             if (_unitGarage.TryGetRestUnit(out Unit unit))
@@ -142,15 +133,5 @@ public class Base : MonoBehaviour, ISpawnable<Base>
         unit.Destroy();
         _unitGarage.RemoveUnit(unit);
         StopUnitsGettingReady();
-    }
-
-    private IEnumerator Working()
-    {
-        while (true)
-        {
-            CreateBase();
-            OrderResource();
-            yield return _waitOrder;
-        }
     }
 }

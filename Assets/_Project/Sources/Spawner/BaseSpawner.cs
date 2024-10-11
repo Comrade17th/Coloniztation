@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -18,11 +15,6 @@ public class BaseSpawner : Spawner<Base>
         Assert.IsNotNull(_initialBase);
     }
 
-    private void Start()
-    {
-        //_initialBase.Flag.BaseBuilded += OnBaseBuilded;
-    }
-
     private void OnEnable()
     {
         _initialBase.Flag.BaseBuilded += OnBaseBuilded;
@@ -31,12 +23,10 @@ public class BaseSpawner : Spawner<Base>
     private void OnDisable()
     {
         _initialBase.Flag.BaseBuilded -= OnBaseBuilded;
-        // отписка?
     }
 
     private void OnBaseBuilded(Flag flag)
     {
-        Debug.Log($"Base builded");
         Base spawnedBase = Spawn();
         spawnedBase.Flag.BaseBuilded += OnBaseBuilded;
         spawnedBase.Init(_database, _unitSpawner);

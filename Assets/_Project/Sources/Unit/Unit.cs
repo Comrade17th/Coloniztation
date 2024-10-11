@@ -16,7 +16,6 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
     private Coroutine _coroutine;
     
     public event Action<Unit> Destroying = delegate{};
-    //public event Action<Unit> BaseBuilded = delegate {};
     public event Action<Unit> FlagResourceDelivered = delegate { };
     public event Action<Resource, Unit> ResourceDelivered = delegate { }; 
     

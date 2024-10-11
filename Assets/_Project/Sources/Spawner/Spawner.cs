@@ -1,6 +1,4 @@
-using System.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using System;
 
 public class Spawner<T> : MonoBehaviour where T: MonoBehaviour, ISpawnable<T>
