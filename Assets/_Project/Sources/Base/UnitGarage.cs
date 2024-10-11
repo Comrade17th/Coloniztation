@@ -11,15 +11,21 @@ public class UnitGarage : MonoBehaviour
 
     private void Start()
     {
-        if(_isInitialBase)
+        if (_isInitialBase)
+        {
             CreateUnits(_startUnitsCount);
+        }
+        else
+        {
+            CreateUnit();
+        }
     }
 
-    public void AcceptUnit(Unit unit)
-    {
-        unit.Init(transform);
-        _units.Add(unit);
-    }
+    // public void AcceptUnit(Unit unit)
+    // {
+    //     unit.Init(transform);
+    //     _units.Add(unit);
+    // }
     
     public void CreateUnit()
     {

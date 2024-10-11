@@ -9,7 +9,7 @@ public class Spawner<T> : MonoBehaviour where T: MonoBehaviour, ISpawnable<T>
 	
 	[SerializeField] private int _startAmount = 1;
 
-	private Pool<T> _pool;
+	protected Pool<T> _pool;
 	protected int _activeCount = 0;
 	protected int _spawnsCount = 0;
 	public event Action<int, int, int> CounterChanged;
@@ -26,7 +26,9 @@ public class Spawner<T> : MonoBehaviour where T: MonoBehaviour, ISpawnable<T>
 
 	public T Spawn()
 	{
+		Debug.Log($"S");
 		T spawnedObject = _pool.Get();
+		Debug.Log($"{spawnedObject == null}");
 
 		spawnedObject.Destroying += OnSpawnedDestroy;
 		spawnedObject.gameObject.SetActive(true);

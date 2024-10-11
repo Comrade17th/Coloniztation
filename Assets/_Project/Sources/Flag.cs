@@ -11,6 +11,8 @@ public class Flag : MonoBehaviour
     
     private float _spawnRadius = 3f;
 
+    public event Action<Flag> BaseBuilded = delegate { };
+
     public bool CanPlant()
     {
         return Physics.OverlapSphere(transform.position, _spawnRadius, _layerMask).Length == 0;
@@ -31,5 +33,10 @@ public class Flag : MonoBehaviour
     public void Plant()
     {
         _collider.enabled = true;
+    }
+
+    public void StartBuildingBase()
+    {
+        BaseBuilded.Invoke(this);
     }
 }

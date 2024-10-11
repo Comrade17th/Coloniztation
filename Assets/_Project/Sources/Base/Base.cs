@@ -38,6 +38,21 @@ public class Base : MonoBehaviour, ISpawnable<Base>
         _coroutine = StartCoroutine(Working());
     }
 
+    private void OnEnable()
+    {
+        Flag.BaseBuilded += OnFlagBaseBuilded;
+    }
+
+    private void OnDisable()
+    {
+        Flag.BaseBuilded -= OnFlagBaseBuilded;
+    }
+
+    public void Init(ResourcesDataBase database)
+    {
+        _database = database;
+    }
+
     public void StartUnitsGettingReady()
     {
         _isBaseBuilding = true;
@@ -48,7 +63,12 @@ public class Base : MonoBehaviour, ISpawnable<Base>
         _isBaseBuilding = false;
     }
 
-    public void AcceptUnit(Unit unit) => _unitGarage.AcceptUnit(unit);
+    private void OnFlagBaseBuilded(Flag flag)
+    {
+         // add thing that we cant reuse flag
+    }
+
+    // public void AcceptUnit(Unit unit) => _unitGarage.AcceptUnit(unit); 
     
     private void OrderResource()
     {
@@ -102,8 +122,17 @@ public class Base : MonoBehaviour, ISpawnable<Base>
             {
                 _storedResources -= _baseCreatePrice;
                 unit.BuildBase(Flag);
+                unit.FlagResourceDelivered += OnUnitFlagResourceDelivered;
             }
         }
+    }
+
+    private void OnUnitFlagResourceDelivered(Unit unit)
+    {
+        unit.FlagResourceDelivered -= OnUnitFlagResourceDelivered;
+        Debug.Log($"unit delivered to flag");
+        unit.Destroy();
+        Debug.Log($"Unit destroyed");
     }
 
     private IEnumerator Working()

@@ -73,10 +73,9 @@ public class InputHandler : MonoBehaviour
                 if (_flag.CanPlant())
                 {
                     _flag.Plant();
-                    OnUnchooseBase();
                     _selectedBase.StartUnitsGettingReady();
+                    OnUnchooseBase();
                 }
-                    
             }
         }
     }
