@@ -9,6 +9,8 @@ public class UnitGarage : MonoBehaviour
     
     private List<Unit> _units = new();
 
+    public int Count => _units.Count;
+
     private void Start()
     {
         if (_isInitialBase)

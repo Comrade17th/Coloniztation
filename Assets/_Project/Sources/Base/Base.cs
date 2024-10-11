@@ -17,12 +17,15 @@ public class Base : MonoBehaviour, ISpawnable<Base>
     private int _storedResources = 0;
     private int _unitCreatePrice = 3;
     private int _baseCreatePrice = 5;
+    private int _unitsNeedToNewBase = 1;
     private bool _isBaseBuilding = false;
 
     private Coroutine _coroutine;
     private WaitForSeconds _waitOrder;
 
-    [field: SerializeField] public Flag Flag; 
+    [field: SerializeField] public Flag Flag;
+
+    private bool IsEnoughUnits => _unitGarage.Count > _unitsNeedToNewBase;
 
     public event Action<int> StoredResourcesChanged;
     public event Action<Base> Destroying;
@@ -99,12 +102,13 @@ public class Base : MonoBehaviour, ISpawnable<Base>
         StoredResourcesChanged?.Invoke(_storedResources);
         resource.Destroy();
 
-        TryCreateNewUnit();
+        if(_isBaseBuilding == false || IsEnoughUnits == false)
+            TryCreateNewUnit();
     }
 
     private bool TryCreateNewUnit()
     {
-        if (_isBaseBuilding == false && _storedResources >= _unitCreatePrice)
+        if (_storedResources >= _unitCreatePrice) // _isBaseBuilding == false
         {
             _storedResources -= _unitCreatePrice;
             StoredResourcesChanged.Invoke(_storedResources);
@@ -117,7 +121,9 @@ public class Base : MonoBehaviour, ISpawnable<Base>
 
     private void CreateBase()
     {
-        if (_isBaseBuilding && _storedResources >= _baseCreatePrice)
+        if ( _unitGarage.Count > _unitsNeedToNewBase && 
+            _isBaseBuilding && 
+             _storedResources >= _baseCreatePrice)
         {
             if (_unitGarage.TryGetRestUnit(out Unit unit))
             {
