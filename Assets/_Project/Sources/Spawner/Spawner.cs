@@ -26,9 +26,7 @@ public class Spawner<T> : MonoBehaviour where T: MonoBehaviour, ISpawnable<T>
 
 	public T Spawn()
 	{
-		Debug.Log($"S");
 		T spawnedObject = _pool.Get();
-		Debug.Log($"{spawnedObject == null}");
 
 		spawnedObject.Destroying += OnSpawnedDestroy;
 		spawnedObject.gameObject.SetActive(true);

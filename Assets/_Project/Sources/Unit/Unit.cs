@@ -52,6 +52,7 @@ public class Unit : MonoBehaviour, ISpawnable<Unit>
 
     public void Destroy()
     {
+        ResourceDelivered = delegate { };
         Destroying.Invoke(this);
     }
 

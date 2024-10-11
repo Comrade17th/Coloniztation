@@ -26,6 +26,11 @@ public class UnitGarage : MonoBehaviour
     //     unit.Init(transform);
     //     _units.Add(unit);
     // }
+
+    public void Init(UnitSpawner unitSpawner)
+    {
+        _unitSpawner = unitSpawner;
+    }
     
     public void CreateUnit()
     {
@@ -56,5 +61,10 @@ public class UnitGarage : MonoBehaviour
         {
            CreateUnit();
         }
+    }
+
+    public void RemoveUnit(Unit unit)
+    {
+        _units.Remove(unit);
     }
 }

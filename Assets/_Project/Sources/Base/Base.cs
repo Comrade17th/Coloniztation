@@ -48,8 +48,9 @@ public class Base : MonoBehaviour, ISpawnable<Base>
         Flag.BaseBuilded -= OnFlagBaseBuilded;
     }
 
-    public void Init(ResourcesDataBase database)
+    public void Init(ResourcesDataBase database, UnitSpawner unitSpawner)
     {
+        _unitGarage.Init(unitSpawner);
         _database = database;
     }
 
@@ -121,6 +122,7 @@ public class Base : MonoBehaviour, ISpawnable<Base>
             if (_unitGarage.TryGetRestUnit(out Unit unit))
             {
                 _storedResources -= _baseCreatePrice;
+                StoredResourcesChanged.Invoke(_storedResources);
                 unit.BuildBase(Flag);
                 unit.FlagResourceDelivered += OnUnitFlagResourceDelivered;
             }
@@ -130,9 +132,10 @@ public class Base : MonoBehaviour, ISpawnable<Base>
     private void OnUnitFlagResourceDelivered(Unit unit)
     {
         unit.FlagResourceDelivered -= OnUnitFlagResourceDelivered;
-        Debug.Log($"unit delivered to flag");
+        unit.ResourceDelivered -= OnResourceDelivered;
         unit.Destroy();
-        Debug.Log($"Unit destroyed");
+        _unitGarage.RemoveUnit(unit);
+        StopUnitsGettingReady();
     }
 
     private IEnumerator Working()
